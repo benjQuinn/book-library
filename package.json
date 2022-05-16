@@ -22,7 +22,8 @@
   "homepage": "https://github.com/benjQuinn/book-library#readme",
   "dependencies": {
     "express": "^4.18.1",
-    "mysql2": "^2.3.3"
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.19.0"
   },
   "devDependencies": {
     "chai": "^4.3.6",
