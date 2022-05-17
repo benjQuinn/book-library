@@ -3,6 +3,10 @@ const readerController = require("../controllers/reader");
 
 const router = express.Router();
 
-router.post("/", readerController.reader_create);
+// GET
+router.get("/", readerController.get_readers);
+
+// POST
+router.post("/", readerController.create_reader);
 
 module.exports = router;
