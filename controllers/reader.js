@@ -19,13 +19,38 @@ exports.get_readers = async (req, res) => {
 };
 
 exports.get_reader_id = async (req, res) => {
-  const id = req.params.readerId;
-  const reader = await Reader.findByPk(id);
+  const reader = await Reader.findByPk(req.params.readerId);
 
   try {
     !reader
       ? res.status(404).json({ error: "The reader could not be found." })
       : res.status(200).json(reader);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.update_reader = async (req, res) => {
+  const updatedReaderRecord = await Reader.findByPk(req.params.readerId);
+
+  try {
+    await Reader.update(req.body, { where: { id: req.params.readerId } });
+    !updatedReaderRecord
+      ? res.status(404).json({ error: "The reader could not be found." })
+      : res.status(200).json(updatedReaderRecord);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.delete_reader = async (req, res) => {
+  const reader = await Reader.findByPk(req.params.readerId);
+
+  try {
+    await Reader.destroy({ where: { id: req.params.readerId } });
+    !reader
+      ? res.status(404).json({ error: "The reader could not be found." })
+      : res.sendStatus(204);
   } catch (err) {
     res.status(500).json(err);
   }
