@@ -1,14 +1,8 @@
 const { Book } = require("../src/models");
+const helperFunc = require("./helpers");
 
-exports.create_book = async (req, res) => {
-  try {
-    const newBook = await Book.create(req.body);
-    res.status(201).json(newBook);
-  } catch (err) {
-    err.name === "SequelizeValidationError"
-      ? res.status(500).json({ error: err.errors.map((e) => e.message) })
-      : res.status(500).json(err);
-  }
+exports.create_book = (req, res) => {
+  helperFunc.createItem(res, "book", req.body);
 };
 
 exports.get_books = async (req, res) => {
