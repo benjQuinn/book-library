@@ -30,6 +30,17 @@ describe("/books", () => {
         expect(newBookRecord.genre).to.equal("Fiction");
         expect(newBookRecord.ISBN).to.equal(001);
       });
+
+      it("returns error if title is null", async () => {
+        const response = await request(app).post("/books").send({
+          title: "",
+          author: "",
+        });
+
+        expect(response.status).to.equal(500);
+        expect(response.body.error[0]).to.equal("Must have a title");
+        expect(response.body.error[1]).to.equal("Must have an author");
+      });
     });
   });
 

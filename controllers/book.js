@@ -5,7 +5,9 @@ exports.create_book = async (req, res) => {
     const newBook = await Book.create(req.body);
     res.status(201).json(newBook);
   } catch (err) {
-    res.status(500).json(err);
+    err.name === "SequelizeValidationError"
+      ? res.status(500).json({ error: err.errors.map((e) => e.message) })
+      : res.status(500).json(err);
   }
 };
 
@@ -50,7 +52,7 @@ exports.delete_book = async (req, res) => {
     await Book.destroy({ where: { id: req.params.bookId } });
     !book
       ? res.status(404).json({ error: "The book could not be found." })
-      : res.sendStatus(204);
+      : res.status(204).send("Book deleted!");
   } catch (err) {
     res.status(500).json(err);
   }

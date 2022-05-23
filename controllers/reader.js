@@ -6,13 +6,14 @@ exports.create_reader = async (req, res) => {
   });
 
   try {
-    const newReader = await Reader.create(req.body);
-
-    !existingReader
-      ? res.status(201).json(newReader)
-      : res
-          .status(500)
-          .json({ error: "Reader with this email address already exists" });
+    if (!existingReader) {
+      const newReader = await Reader.create(req.body);
+      res.status(201).json(newReader);
+    } else {
+      res
+        .status(500)
+        .json({ error: "Reader with this email address already exists" });
+    }
   } catch (err) {
     err.name === "SequelizeValidationError"
       ? res.status(500).json({ error: err.errors.map((e) => e.message) })
@@ -61,7 +62,7 @@ exports.delete_reader = async (req, res) => {
     await Reader.destroy({ where: { id: req.params.readerId } });
     !reader
       ? res.status(404).json({ error: "The reader could not be found." })
-      : res.sendStatus(204);
+      : res.status(204).send("Reader deleted!");
   } catch (err) {
     res.status(500).json(err);
   }
