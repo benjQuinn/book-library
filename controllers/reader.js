@@ -1,12 +1,21 @@
 const { Reader } = require("../src/models");
 
 exports.create_reader = async (req, res) => {
+  const existingReader = await Reader.findOne({
+    where: { email: req.body.email },
+  });
+
   try {
     const newReader = await Reader.create(req.body);
-    res.status(201).json(newReader);
+
+    !existingReader
+      ? res.status(201).json(newReader)
+      : res
+          .status(500)
+          .json({ error: "Reader with this email address already exists" });
   } catch (err) {
     err.name === "SequelizeValidationError"
-      ? res.status(500).json(err.errors.map((e) => e.message))
+      ? res.status(500).json({ error: err.errors.map((e) => e.message) })
       : res.status(500).json(err);
   }
 };

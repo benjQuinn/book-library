@@ -36,7 +36,7 @@ describe("/readers", () => {
         });
 
         expect(response.status).to.equal(500);
-        expect(response.body[0]).to.equal("Must have a name");
+        expect(response.body.error[0]).to.equal("Must have a name");
       });
 
       it("returns error if email is invalid and password is less that 8 characters", async () => {
@@ -47,9 +47,30 @@ describe("/readers", () => {
         });
 
         expect(response.status).to.equal(500);
-        expect(response.body[0]).to.equal("Must be a valid email address");
-        expect(response.body[1]).to.equal(
+        expect(response.body.error[0]).to.equal(
+          "Must be a valid email address"
+        );
+        expect(response.body.error[1]).to.equal(
           "Password must be 8 characters or longer"
+        );
+      });
+
+      it("reurns error if email address has already been used", async () => {
+        await request(app).post("/readers").send({
+          name: "Some Name",
+          email: "some_email_address@gmail.com",
+          password: "supersecret",
+        });
+
+        const response = await request(app).post("/readers").send({
+          name: "Ben Quinn",
+          email: "some_email_address@gmail.com",
+          password: "qwertyuiop",
+        });
+
+        expect(response.status).to.equal(500);
+        expect(response.body.error).to.equal(
+          "Reader with this email address already exists"
         );
       });
     });
