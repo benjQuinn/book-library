@@ -5,7 +5,9 @@ exports.create_reader = async (req, res) => {
     const newReader = await Reader.create(req.body);
     res.status(201).json(newReader);
   } catch (err) {
-    res.status(500).json(err);
+    err.name === "SequelizeValidationError"
+      ? res.status(500).json(err.errors.map((e) => e.message))
+      : res.status(500).json(err);
   }
 };
 

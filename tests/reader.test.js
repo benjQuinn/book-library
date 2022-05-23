@@ -28,6 +28,30 @@ describe("/readers", () => {
         expect(newReaderRecord.email).to.equal("future_ms_darcy@gmail.com");
         expect(newReaderRecord.password).to.equal("supersecret");
       });
+
+      it("returns error if property is null", async () => {
+        const response = await request(app).post("/readers").send({
+          email: "some_email_address@gmail.com",
+          password: "supersecret",
+        });
+
+        expect(response.status).to.equal(500);
+        expect(response.body[0]).to.equal("Must have a name");
+      });
+
+      it("returns error if email is invalid and password is less that 8 characters", async () => {
+        const response = await request(app).post("/readers").send({
+          name: "Some Name",
+          email: "some_email_address.com",
+          password: "secret",
+        });
+
+        expect(response.status).to.equal(500);
+        expect(response.body[0]).to.equal("Must be a valid email address");
+        expect(response.body[1]).to.equal(
+          "Password must be 8 characters or longer"
+        );
+      });
     });
   });
 
@@ -39,9 +63,18 @@ describe("/readers", () => {
         Reader.create({
           name: "Elizabeth Bennet",
           email: "future_ms_darcy@gmail.com",
+          password: "password@",
         }),
-        Reader.create({ name: "Arya Stark", email: "vmorgul@me.com" }),
-        Reader.create({ name: "Lyra Belacqua", email: "darknorth123@msn.org" }),
+        Reader.create({
+          name: "Arya Stark",
+          email: "vmorgul@me.com",
+          password: "password@@",
+        }),
+        Reader.create({
+          name: "Lyra Belacqua",
+          email: "darknorth123@msn.org",
+          password: "password@@@",
+        }),
       ]);
     });
 
