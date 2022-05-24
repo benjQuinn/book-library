@@ -72,7 +72,7 @@ exports.deleteItem = async (res, model, id) => {
       res.status(404).json(get404Error(model));
     } else {
       await Model.destroy({ where: { id: id } });
-      res.status(204).json({ message: `${model} deleted!` });
+      res.json({ message: `${model} deleted!` }).status(204);
     }
   } catch (err) {
     res.status(500).json(err);
