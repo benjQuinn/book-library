@@ -1,4 +1,5 @@
 const { Reader } = require("../src/models");
+const helperFunc = require("./helpers");
 
 exports.create_reader = async (req, res) => {
   const existingReader = await Reader.findOne({
@@ -21,49 +22,18 @@ exports.create_reader = async (req, res) => {
   }
 };
 
-exports.get_readers = async (req, res) => {
-  try {
-    const readers = await Reader.findAll();
-    res.status(200).json(readers);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+exports.get_readers = (req, res) => {
+  helperFunc.getItems(res, "reader");
 };
 
-exports.get_reader_id = async (req, res) => {
-  const reader = await Reader.findByPk(req.params.readerId);
-
-  try {
-    !reader
-      ? res.status(404).json({ error: "The reader could not be found." })
-      : res.status(200).json(reader);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+exports.get_reader_id = (req, res) => {
+  helperFunc.getItemById(res, "reader", req.params.readerId);
 };
 
 exports.update_reader = async (req, res) => {
-  const updatedReaderRecord = await Reader.findByPk(req.params.readerId);
-
-  try {
-    await Reader.update(req.body, { where: { id: req.params.readerId } });
-    !updatedReaderRecord
-      ? res.status(404).json({ error: "The reader could not be found." })
-      : res.status(200).json(updatedReaderRecord);
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  helperFunc.updateItem(res, "reader", req.params.readerId, req.body);
 };
 
 exports.delete_reader = async (req, res) => {
-  const reader = await Reader.findByPk(req.params.readerId);
-
-  try {
-    await Reader.destroy({ where: { id: req.params.readerId } });
-    !reader
-      ? res.status(404).json({ error: "The reader could not be found." })
-      : res.status(204).send("Reader deleted!");
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  helperFunc.deleteItem(res, "reader", req.params.readerId);
 };
