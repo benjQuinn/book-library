@@ -10,6 +10,13 @@ const getModel = (model) => {
   return models[model];
 };
 
+const removePassword = (obj) => {
+  if (obj.hasOwnProperty("password")) {
+    delete obj.password;
+  }
+  return obj;
+};
+
 exports.createItem = async (res, model, item) => {
   const Model = getModel(model);
 
@@ -72,7 +79,7 @@ exports.deleteItem = async (res, model, id) => {
       res.status(404).json(get404Error(model));
     } else {
       await Model.destroy({ where: { id: id } });
-      res.json({ message: `${model} deleted!` }).status(204);
+      res.sendStatus(204);
     }
   } catch (err) {
     res.status(500).json(err);
